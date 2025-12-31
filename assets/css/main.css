@@ -15,9 +15,9 @@
 .custom-logo {
     display: block;
     margin: 0 auto; /* Centra horizontalmente */
-    max-width: 120px; /* Ajusta según el tamaño de tu logo */
+    max-width: 200px; /* Ajusta según el tamaño de tu logo */
     height: auto;
-    margin-bottom: 15px; /* Espacio entre el logo y el texto */
+    margin-bottom: 0px; /* Espacio entre el logo y el texto */
 }
 	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 		margin: 0;
