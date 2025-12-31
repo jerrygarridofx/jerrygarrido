@@ -15,7 +15,7 @@
 .custom-logo {
     display: block;
     margin: 0 auto; /* Centra horizontalmente */
-    max-width: 200px; /* Ajusta según el tamaño de tu logo */
+    max-width: 300px; /* Ajusta según el tamaño de tu logo */
     height: auto;
     margin-bottom: 0px; /* Espacio entre el logo y el texto */
 }
