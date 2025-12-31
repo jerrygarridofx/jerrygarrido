@@ -1,7 +1,6 @@
 @import url(font-awesome.min.css);
-@import url("https://fonts.googleapis.com/css?family=Raleway:200,700|Source+Sans+Pro:300,600,300italic,600italic");
-<!-- Fuente Marcellus SC -->
-@import url("https://fonts.googleapis.com/css2?family=Marcellus+SC&display=swap");
+/* Fuentes combinadas: Raleway, Source Sans Pro y Marcellus SC */
+@import url('https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Raleway:wght@200;700&family=Source+Sans+Pro:ital,wght@0,300;0,600;1,300;1,600&display=swap');
 
 
 
