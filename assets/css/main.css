@@ -3870,5 +3870,32 @@
 		#footer .inner {
 			padding: 2em 1.5em 0.1em 1.5em ;
 		}
+/* ============================================
+   FUENTE MARCELIUS SC PARA JERRY GARRIDO
+   ============================================ */
 
+/* Aplicar a TODOS los encabezados */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Marcellus SC', Raleway, Helvetica, sans-serif !important;
+}
+
+/* Específico para el BANNER principal */
+#banner h2 {
+    font-family: 'Marcellus SC', Raleway, Helvetica, sans-serif !important;
+}
+
+/* Específico para títulos .major en secciones */
+h2.major, h3.major {
+    font-family: 'Marcellus SC', Raleway, Helvetica, sans-serif !important;
+}
+
+/* Específico para el menú */
+#menu h2 {
+    font-family: 'Marcellus SC', Raleway, Helvetica, sans-serif !important;
+}
+
+/* Específico para el encabezado superior */
+#header h1 {
+    font-family: 'Marcellus SC', Raleway, Helvetica, sans-serif !important;
+}
 	}
