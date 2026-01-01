@@ -3876,6 +3876,11 @@
 		#footer .inner {
 			padding: 2em 1.5em 0.1em 1.5em ;
 		}
+
+		/* Scroll suave */
+html {
+    scroll-behavior: smooth;
+}
 /* ============================================
    FUENTE MARCELIUS SC PARA JERRY GARRIDO
    ============================================ */
