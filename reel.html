@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video</title>
+    <style>
+        /* Elimina márgenes y fondo para que el video ocupe todo */
+        * { margin: 0; padding: 0; }
+        body {
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Evita barras de desplazamiento */
+        }
+        /* El iframe ocupará toda la pantalla */
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+        /* Un mensaje sutil para que el usuario sepa que debe hacer clic */
+        .mensaje {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            pointer-events: none; /* Permite hacer clic "a través" del mensaje */
+            transition: opacity 1s;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- El iframe con tu video de Vimeo -->
+    <iframe
+        id="miVideo"
+        src="https://player.vimeo.com/video/1220651018?h=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+        allowfullscreen>
+    </iframe>
+
+    <!-- Mensaje informativo (desaparece al hacer clic) -->
+    <div class="mensaje" id="mensaje">Haz clic en cualquier parte para reproducir en pantalla completa</div>
+
+    <script>
+        const iframe = document.getElementById('miVideo');
+        const mensaje = document.getElementById('mensaje');
+        let reproduciendo = false;
+
+        // Esta función se ejecuta al hacer clic en cualquier parte de la página
+        document.addEventListener('click', function() {
+            // 1. Solicitar pantalla completa
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(e => {});
+            }
+
+            // 2. Intentar reproducir el video (si no se está reproduciendo ya)
+            if (!reproduciendo) {
+                // Enviamos un mensaje al iframe para que reproduzca el video
+                iframe.contentWindow.postMessage({
+                    method: 'play'
+                }, 'https://player.vimeo.com');
+                reproduciendo = true;
+                // Ocultamos el mensaje
+                mensaje.style.opacity = '0';
+                setTimeout(() => mensaje.style.display = 'none', 1000);
+            }
+        });
+
+        // También permitimos que el usuario entre en pantalla completa con el botón nativo de Vimeo
+        // (el iframe ya tiene allowfullscreen)
+    </script>
+</body>
+</html>
