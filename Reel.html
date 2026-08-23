@@ -2,85 +2,166 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Video</title>
+    <!-- Esto oculta la barra de direcciones en Safari para iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* Elimina márgenes y fondo para que el video ocupe todo */
-        * { margin: 0; padding: 0; }
-        body {
+        /* Elimina todo margen y padding */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             background: #000;
+            position: fixed; /* Evita desplazamientos */
+            top: 0;
+            left: 0;
+        }
+        
+        /* El contenedor ocupa toda la pantalla */
+        .video-container {
+            width: 100vw;
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100); /* Solución para móviles */
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden; /* Evita barras de desplazamiento */
+            background: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
-        /* El iframe ocupará toda la pantalla */
+        
+        /* El iframe ocupa todo el espacio disponible */
         iframe {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             border: none;
+            background: #000;
         }
-        /* Un mensaje sutil para que el usuario sepa que debe hacer clic */
+        
+        /* Mensaje de instrucción */
         .mensaje {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             left: 0;
             right: 0;
             text-align: center;
-            color: rgba(255,255,255,0.5);
-            font-family: Arial, sans-serif;
+            color: rgba(255,255,255,0.6);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             font-size: 14px;
-            pointer-events: none; /* Permite hacer clic "a través" del mensaje */
-            transition: opacity 1s;
+            pointer-events: none;
+            transition: opacity 0.8s;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            padding: 0 20px;
+            z-index: 10;
+        }
+        
+        /* Para pantallas muy pequeñas */
+        @media (max-width: 480px) {
+            .mensaje {
+                font-size: 12px;
+                bottom: 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- 
-        URL DEL IFRAME MODIFICADA:
-        - Se ha añadido &dnt=1 para evitar sugerencias al final
-        - También se ha añadido &loop=0 para que no se repita en bucle
-    -->
-    <iframe
-        id="miVideo"
-        src="https://player.vimeo.com/video/1220651018?h=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&dnt=1&loop=0"
-        frameborder="0"
-        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-        allowfullscreen>
-    </iframe>
+    <div class="video-container" id="contenedor">
+        <iframe
+            id="miVideo"
+            src="https://player.vimeo.com/video/1220651018?h=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&dnt=1&loop=0&muted=0"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; accelerometer; gyroscope"
+            allowfullscreen
+            webkitallowfullscreen
+            mozallowfullscreen
+            msallowfullscreen>
+        </iframe>
+    </div>
 
-    <!-- Mensaje informativo (desaparece al hacer clic) -->
-    <div class="mensaje" id="mensaje">Haz clic en cualquier parte para reproducir en pantalla completa</div>
+    <div class="mensaje" id="mensaje">🖱️ Toca la pantalla para reproducir y ver en pantalla completa</div>
 
     <script>
+        // Solución para el cálculo correcto del alto en móviles (barra de direcciones)
+        function setVH() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        setVH();
+        window.addEventListener('resize', setVH);
+
         const iframe = document.getElementById('miVideo');
         const mensaje = document.getElementById('mensaje');
         let reproduciendo = false;
 
-        // Esta función se ejecuta al hacer clic en cualquier parte de la página
-        document.addEventListener('click', function() {
-            // 1. Solicitar pantalla completa
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch(e => {});
+        // Función para entrar en pantalla completa
+        function entrarPantallaCompleta() {
+            const el = document.documentElement;
+            if (el.requestFullscreen) {
+                el.requestFullscreen().catch(err => {
+                    // Si falla, intentamos con el contenedor
+                    document.getElementById('contenedor').requestFullscreen().catch(e => {});
+                });
+            } else if (el.webkitRequestFullscreen) { // Safari
+                el.webkitRequestFullscreen();
+            } else if (el.msRequestFullscreen) { // IE/Edge
+                el.msRequestFullscreen();
             }
+        }
 
-            // 2. Intentar reproducir el video (si no se está reproduciendo ya)
+        // Función para reproducir el video
+        function reproducirVideo() {
             if (!reproduciendo) {
-                // Enviamos un mensaje al iframe para que reproduzca el video
-                iframe.contentWindow.postMessage({
-                    method: 'play'
-                }, 'https://player.vimeo.com');
+                try {
+                    iframe.contentWindow.postMessage({
+                        method: 'play'
+                    }, 'https://player.vimeo.com');
+                } catch (e) {
+                    // Si falla, intentamos con el atributo src (recargar)
+                    const srcActual = iframe.src;
+                    iframe.src = srcActual;
+                }
                 reproduciendo = true;
-                // Ocultamos el mensaje
                 mensaje.style.opacity = '0';
                 setTimeout(() => mensaje.style.display = 'none', 1000);
             }
+        }
+
+        // Evento: tocar/clic en cualquier parte
+        document.addEventListener('click', function(e) {
+            // Primero, pantalla completa
+            entrarPantallaCompleta();
+            // Luego, reproducir
+            setTimeout(reproducirVideo, 300);
         });
 
-        // También permitimos que el usuario entre en pantalla completa con el botón nativo de Vimeo
-        // (el iframe ya tiene allowfullscreen)
+        document.addEventListener('touchstart', function(e) {
+            // En móviles, el primer toque activa la pantalla completa
+            if (!reproduciendo) {
+                entrarPantallaCompleta();
+                setTimeout(reproducirVideo, 400);
+            }
+        }, { passive: true });
+
+        // También al presionar el botón de play del iframe, se activa la pantalla completa
+        // Esto es para cuando el usuario toca el botón nativo de Vimeo
+        window.addEventListener('message', function(e) {
+            if (e.origin === 'https://player.vimeo.com') {
+                if (e.data === 'play') {
+                    entrarPantallaCompleta();
+                }
+            }
+        });
+
+        // Bloquear el scroll en toda la página
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
